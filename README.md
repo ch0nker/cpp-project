@@ -31,6 +31,38 @@ Alternatively, you can use the installation script:
 ./install.sh
 ```
 
+## Templates
+
+In order to create a template you'll need to either run `cpp_project` at least once with or without any arguments or run the following commands.
+
+```bash
+cd ~/.config
+mkdir -p ./cpp_project/templates
+cd ./cpp_project/templates
+mkdir example_template
+```
+
+Then you'd have to create a CMakeLists.txt file within the newly created directory using these placeholders:
+- `__PROJECT_NAME__`: Placeholder for the first argument used.
+- `__NAME__`: Placeholder for either the first argument or the name flag.
+- `__VERSION__`: Placeholder for the version flag.
+- `__DESCRIPTION__`: Placeholder for the description flag.
+
+### Example CMakeLists.txt
+
+```cmake
+cmake_minimum_required(VERSION 3.10)
+
+project(__PROJECT_NAME__
+        VERSION __VERSION__
+        DESCRIPTION "__DESCRIPTION__")
+
+file(GLOB CXX_SOURCES "src/*.c*")
+
+add_executable(__NAME__ ${CXX_SOURCES})
+```
+
+
 ## Usage
 
 To create a new project, use the following command:
@@ -55,7 +87,7 @@ The following flags are available:
 Here’s an example of how to create a new project:
 
 ```bash
-cpp_project MyAwesomeProject -n="project" -d="This is an awesome project!" -v="1.0.0"
+cpp_project MyAwesomeProject -n "project" -d "This is an awesome project!" -v "1.0.0"
 ```
 
 This is the expected output from the example given above:
