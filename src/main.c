@@ -203,8 +203,7 @@ void shared_function(char* value) {
 
 void template_function(char* value) {
     char* templates_path = join_paths(HOME_DIR, ".config/cpp_project/templates");
-    printf("what: %s\n", templates_path);
-
+ 
     if(value == NULL) {
         DIR* templates_dir = opendir(templates_path);
         struct dirent *current_dir;
@@ -223,7 +222,6 @@ void template_function(char* value) {
     }
 
     flags.template = join_paths(templates_path, value);
-    printf("%s\n", flags.template);
     free(templates_path);
 }
 
