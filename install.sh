@@ -6,7 +6,7 @@ fi
 cd ./build || { echo "Failed to change directory to ./build"; exit 1; }
 rm -rf *
 
-if [ ! -f "./Makefile" && ! cmake .. ]; then
+if [ ! -f "./Makefile" ] && ! cmake .. ; then
     echo "CMake failed"
     exit 1
 fi

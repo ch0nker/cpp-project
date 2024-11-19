@@ -8,7 +8,6 @@
 
 #include "args.h"
 
-#define REQUIRED_PARAMS 1
 
 #define HOME_DIR getenv("HOME")
 #define USAGE "Usage:\n" \
@@ -20,6 +19,9 @@
               "\t-v, --version\t\t: Sets the project version.\n" \
               "\t-s, --shared\t\t: Makes the project a shared library.\n" \
               "\t-t, --template\t\t: Copies the template. If no template is given it'll output the available templates.\n"
+
+int REQUIRED_PARAMS = 1;
+
 
 typedef struct {
     char* project_name;
@@ -145,6 +147,31 @@ char* replace_substring(char* str, char* substring, char* with) {
 	return new_str;
 }
 
+void create_config() {
+    struct stat st = {0};
+    char* config_dir = join_paths(HOME_DIR, ".config/cpp_project");
+    if(stat(config_dir, &st) == -1) {
+        if(mkdir(config_dir, S_IRWXU | S_IRWXG | S_IRWXO) == -1) {
+            free(config_dir);
+            fprintf(stderr, "Failed to create config directory.\n");
+
+            exit(EXIT_FAILURE);
+        }
+
+        char* template_dir = join_paths(config_dir, "templates");
+        if(mkdir(template_dir, S_IRWXU | S_IRWXG | S_IRWXO) == -1) {
+            free(config_dir);
+            free(template_dir);
+            fprintf(stderr, "Failed to create templates directory.\n");
+
+            exit(EXIT_FAILURE);
+        }
+
+        free(template_dir);
+    }
+    free(config_dir);
+}
+
 void help_function(char* value) {
     printf("%s", USAGE);
 }
@@ -176,6 +203,7 @@ void shared_function(char* value) {
 
 void template_function(char* value) {
     char* templates_path = join_paths(HOME_DIR, ".config/cpp_project/templates");
+    printf("what: %s\n", templates_path);
 
     if(value == NULL) {
         DIR* templates_dir = opendir(templates_path);
@@ -195,34 +223,12 @@ void template_function(char* value) {
     }
 
     flags.template = join_paths(templates_path, value);
+    printf("%s\n", flags.template);
     free(templates_path);
 }
 
 int main(int argc, char* argv[]) {
-    struct stat st = {0};
-    char* config_dir = join_paths(HOME_DIR, ".config/cpp_project");
-
-    if(stat(config_dir, &st) == -1) {
-        if(mkdir(config_dir, S_IRWXU | S_IRWXG | S_IRWXO) == -1) {
-            free(config_dir);
-            fprintf(stderr, "Failed to create config directory.\n");
-
-            return EXIT_FAILURE;
-        }
-
-        char* template_dir = join_paths(config_dir, "templates");
-        if(mkdir(template_dir, S_IRWXU | S_IRWXG | S_IRWXO) == -1) {
-            free(config_dir);
-            free(template_dir);
-            fprintf(stderr, "Failed to create templates directory.\n");
-
-            return EXIT_FAILURE;
-        }
-
-        free(template_dir);
-    }
-    
-    free(config_dir);
+    create_config();
 
     if(argc == 1) {
         help_function(NULL);

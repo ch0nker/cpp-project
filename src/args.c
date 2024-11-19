@@ -132,7 +132,8 @@ Flag* find_flag(Flag* root ,const char* name) {
     return NULL;
 }
 
-void handle_args(FlagContainer* container, int argc, char** argv, Flag* root, int required_params) {
+void handle_args(FlagContainer* container, int argc, char** argv, int required_params) {
+    printf("%i\n", required_params);
     if(required_params < 1)
         required_params = 0;
 
@@ -141,6 +142,8 @@ void handle_args(FlagContainer* container, int argc, char** argv, Flag* root, in
     if(i >= argc &&
        *argv[1] == '-')
         i = 1;
+
+    printf("%i, %i, %i\n", argc, i, required_params);
 
     for(; i < argc; i++) {
         if(*argv[i] != '-')
